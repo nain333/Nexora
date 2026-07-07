@@ -1,6 +1,13 @@
 import { randomUUID } from "node:crypto";
 
-const posts = [];
+const posts = [
+    {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        userId: "test-user-id",
+        caption: "Seed post for API testing",
+        imageUrl: "uploads/posts/test-image.jpg",
+    },
+];
 
 export default class PostModel {
     constructor(userId, caption, imageUrl) {
