@@ -5,6 +5,6 @@ node_modules/
 
 logs/*
 !logs/.gitkeep
-
+uploads/
 coverage/
 dist/
