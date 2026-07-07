@@ -3,8 +3,14 @@ export default function errorHandler(err, req, res, next) {
     const status = err.status || "error";
     const message = err.message || "Internal server error";
 
-    return res.status(statusCode).json({
+    const response = {
         status,
         message,
-    });
+    };
+
+    if (err.errors) {
+        response.errors = err.errors;
+    }
+
+    return res.status(statusCode).json(response);
 }
