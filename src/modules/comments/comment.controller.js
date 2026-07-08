@@ -6,23 +6,30 @@ import NotFoundError from "../../shared/errors/not-found-error.js";
 
 export default class CommentController {
     static getComments(req, res) {
-        const { id: postId } = req.params;
+    const { id: postId } = req.params;
 
-        const post = PostModel.getPostById(postId);
+    const {
+        page = 1,
+        limit = 10,
+    } = req.query;
 
-        if (!post) {
-            throw new NotFoundError("Post not found");
-        }
+    const post = PostModel.getPostById(postId);
 
-        const comments = CommentModel.getCommentsByPostId(postId);
-
-        return res.status(200).json({
-            status: "success",
-            data: {
-                comments,
-            },
-        });
+    if (!post) {
+        throw new NotFoundError("Post not found");
     }
+
+    const result = CommentModel.getCommentsByPostId(
+        postId,
+        page,
+        limit
+    );
+
+    return res.status(200).json({
+        status: "success",
+        data: result,
+    });
+}
 
     static createComment(req, res) {
         const { id: postId } = req.params;

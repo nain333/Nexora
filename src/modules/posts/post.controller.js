@@ -5,15 +5,23 @@ import NotFoundError from "../../shared/errors/not-found-error.js";
 
 export default class PostController {
     static getAllPosts(req, res) {
-        const posts = PostModel.getAllPosts();
+    const {
+        caption,
+        page = 1,
+        limit = 10,
+    } = req.query;
 
-        return res.status(200).json({
-            status: "success",
-            data: {
-                posts,
-            },
-        });
-    }
+    const result = PostModel.getAllPosts(
+        caption,
+        page,
+        limit,
+    );
+
+    return res.status(200).json({
+        status: "success",
+        data: result,
+    });
+}
 
     static getUserPosts(req, res) {
         const userId = req.user.userId;

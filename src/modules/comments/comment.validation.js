@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param, query } from "express-validator";
 
 export const createCommentValidation = [
     body("content")
@@ -24,4 +24,28 @@ export const updateCommentValidation = [
         .trim()
         .notEmpty()
         .withMessage("Comment content cannot be empty"),
+];
+
+export const commentIdValidation = [
+    param("id")
+        .isUUID()
+        .withMessage("Comment ID must be a valid UUID"),
+];
+
+export const getCommentsValidation = [
+    param("id")
+        .isUUID()
+        .withMessage("Post ID must be a valid UUID"),
+
+    query("page")
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage("Page must be a positive integer")
+        .toInt(),
+
+    query("limit")
+        .optional()
+        .isInt({ min: 1, max: 100 })
+        .withMessage("Limit must be between 1 and 100")
+        .toInt(),
 ];

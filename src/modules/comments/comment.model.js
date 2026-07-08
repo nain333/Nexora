@@ -22,11 +22,31 @@ export default class CommentModel {
         return comment;
     }
 
-    static getCommentsByPostId(postId) {
-        return comments.filter(
-            (comment) => comment.postId === postId
-        );
-    }
+    static getCommentsByPostId(postId, page = 1, limit = 10) {
+    const postComments = comments.filter(
+        (comment) => comment.postId === postId
+    );
+
+    const totalComments = postComments.length;
+    const totalPages = Math.ceil(totalComments / limit);
+
+    const startIndex = (page - 1) * limit;
+
+    const paginatedComments = postComments.slice(
+        startIndex,
+        startIndex + limit
+    );
+
+    return {
+        comments: paginatedComments,
+        pagination: {
+            currentPage: page,
+            limit,
+            totalComments,
+            totalPages,
+        },
+    };
+}
 
     static getCommentById(commentId) {
         return comments.find(

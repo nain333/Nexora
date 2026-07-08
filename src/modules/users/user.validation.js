@@ -1,57 +1,36 @@
-import { body } from "express-validator";
+import { body, checkExact } from "express-validator";
 
-export const registerValidation = [
+export const registerValidation = checkExact([
     body("name")
-        .exists({ values: "falsy" })
-        .withMessage("Name is required")
-        .bail()
-        .isString()
-        .withMessage("Name must be a string")
-        .bail()
         .trim()
         .notEmpty()
-        .withMessage("Name cannot be empty"),
+        .withMessage("Name is required"),
 
     body("email")
-        .exists({ values: "falsy" })
-        .withMessage("Email is required")
-        .bail()
-        .isString()
-        .withMessage("Email must be a string")
-        .bail()
         .trim()
+        .notEmpty()
+        .withMessage("Email is required")
         .isEmail()
-        .withMessage("A valid email address is required")
+        .withMessage("Email must be valid")
         .normalizeEmail(),
 
     body("password")
-        .exists({ values: "falsy" })
+        .notEmpty()
         .withMessage("Password is required")
-        .bail()
-        .isString()
-        .withMessage("Password must be a string")
-        .bail()
         .isLength({ min: 8 })
         .withMessage("Password must be at least 8 characters long"),
-];
+]);
 
-export const loginValidation = [
+export const loginValidation = checkExact([
     body("email")
-        .exists({ values: "falsy" })
-        .withMessage("Email is required")
-        .bail()
-        .isString()
-        .withMessage("Email must be a string")
-        .bail()
         .trim()
+        .notEmpty()
+        .withMessage("Email is required")
         .isEmail()
-        .withMessage("A valid email address is required")
+        .withMessage("Email must be valid")
         .normalizeEmail(),
 
     body("password")
-        .exists({ values: "falsy" })
-        .withMessage("Password is required")
-        .bail()
-        .isString()
-        .withMessage("Password must be a string"),
-];
+        .notEmpty()
+        .withMessage("Password is required"),
+]);
