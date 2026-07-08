@@ -51,3 +51,14 @@ export const getAllPostsValidation = [
         .withMessage("Limit must be between 1 and 100")
         .toInt(),
 ];
+
+export const postStatusValidation = [
+    body("status")
+        .exists({ values: "falsy" })
+        .withMessage("Post status is required")
+        .bail()
+        .isIn(["published", "draft", "archived"])
+        .withMessage(
+            "Post status must be published, draft, or archived"
+        ),
+];

@@ -6,19 +6,21 @@ const posts = [
     userId: "test-user-id",
     caption: "Seed post for API testing",
     imageUrl: "uploads/posts/test-image.jpg",
+    status: "published",
   },
 ];
 
 export default class PostModel {
-  constructor(userId, caption, imageUrl) {
+  constructor(userId, caption, imageUrl, status = "published") {
     this.id = randomUUID();
     this.userId = userId;
     this.caption = caption;
     this.imageUrl = imageUrl;
+    this.status = status;
   }
 
-  static createPost(userId, caption, imageUrl) {
-    const post = new PostModel(userId, caption, imageUrl);
+  static createPost(userId, caption, imageUrl, status = "published") {
+    const post = new PostModel(userId, caption, imageUrl, status);
 
     posts.push(post);
 
@@ -26,36 +28,38 @@ export default class PostModel {
   }
 
   static getAllPosts(caption, page = 1, limit = 10) {
-    let filteredPosts = posts;
+  let filteredPosts = posts.filter(
+    (post) => post.status === "published",
+  );
 
-    if (caption) {
-      const normalizedCaption = caption.trim().toLowerCase();
+  if (caption) {
+    const normalizedCaption = caption.trim().toLowerCase();
 
-      filteredPosts = filteredPosts.filter((post) =>
-        post.caption.toLowerCase().includes(normalizedCaption),
-      );
-    }
-
-    const totalPosts = filteredPosts.length;
-    const totalPages = Math.ceil(totalPosts / limit);
-
-    const startIndex = (page - 1) * limit;
-
-    const paginatedPosts = filteredPosts.slice(
-      startIndex,
-      startIndex + limit,
+    filteredPosts = filteredPosts.filter((post) =>
+      post.caption.toLowerCase().includes(normalizedCaption),
     );
-
-    return {
-      posts: paginatedPosts,
-      pagination: {
-        currentPage: page,
-        limit,
-        totalPosts,
-        totalPages,
-      },
-    };
   }
+
+  const totalPosts = filteredPosts.length;
+  const totalPages = Math.ceil(totalPosts / limit);
+
+  const startIndex = (page - 1) * limit;
+
+  const paginatedPosts = filteredPosts.slice(
+    startIndex,
+    startIndex + limit,
+  );
+
+  return {
+    posts: paginatedPosts,
+    pagination: {
+      currentPage: page,
+      limit,
+      totalPosts,
+      totalPages,
+    },
+  };
+}
 
   static getPostsByUserId(userId) {
     return posts.filter((post) => post.userId === userId);
@@ -79,6 +83,17 @@ export default class PostModel {
     if (imageUrl !== undefined) {
       post.imageUrl = imageUrl;
     }
+
+    return post;
+  }
+  static updatePostStatus(postId, status) {
+    const post = PostModel.getPostById(postId);
+
+    if (!post) {
+      return null;
+    }
+
+    post.status = status;
 
     return post;
   }

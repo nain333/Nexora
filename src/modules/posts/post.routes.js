@@ -11,6 +11,7 @@ import {
   updatePostValidation,
   postIdValidation,
   getAllPostsValidation,
+  postStatusValidation,
 } from "./post.validation.js";
 
 const postRouter = Router();
@@ -25,6 +26,13 @@ postRouter.get(
 );
 
 postRouter.get("/", PostController.getUserPosts);
+postRouter.patch(
+  "/:id/status",
+  postIdValidation,
+  postStatusValidation,
+  validationMiddleware,
+  PostController.updatePostStatus,
+);
 
 postRouter.get(
   "/:id",

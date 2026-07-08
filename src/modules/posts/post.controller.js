@@ -106,7 +106,32 @@ export default class PostController {
             },
         });
     }
+static updatePostStatus(req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
 
+    const post = PostModel.getPostById(id);
+
+    if (!post) {
+        throw new NotFoundError("Post not found");
+    }
+
+    if (post.userId !== req.user.userId) {
+        throw new ForbiddenError(
+            "You are not authorized to update this post"
+        );
+    }
+
+    const updatedPost = PostModel.updatePostStatus(id, status);
+
+    return res.status(200).json({
+        status: "success",
+        message: "Post status updated successfully",
+        data: {
+            post: updatedPost,
+        },
+    });
+}
     static deletePost(req, res) {
         const { id } = req.params;
 
