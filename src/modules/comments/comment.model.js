@@ -8,6 +8,7 @@ export default class CommentModel {
         this.userId = userId;
         this.postId = postId;
         this.content = content;
+        this.createdAt = new Date();
     }
 
     static createComment(userId, postId, content) {

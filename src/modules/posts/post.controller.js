@@ -4,15 +4,17 @@ import ForbiddenError from "../../shared/errors/forbidden-error.js";
 import NotFoundError from "../../shared/errors/not-found-error.js";
 
 export default class PostController {
-    static getAllPosts(req, res) {
+static getAllPosts(req, res) {
     const {
         caption,
+        sort,
         page = 1,
         limit = 10,
     } = req.query;
 
     const result = PostModel.getAllPosts(
         caption,
+        sort,
         page,
         limit,
     );

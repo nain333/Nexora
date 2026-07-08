@@ -7,6 +7,7 @@ export default class LikeModel {
         this.id = randomUUID();
         this.userId = userId;
         this.postId = postId;
+        this.createdAt = new Date();
     }
 
     static getLikesByPostId(postId) {

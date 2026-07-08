@@ -1,13 +1,14 @@
 import { randomUUID } from "node:crypto";
-
+import LikeModel from "../likes/like.model.js";
 const posts = [
-  {
-    id: "550e8400-e29b-41d4-a716-446655440000",
-    userId: "test-user-id",
-    caption: "Seed post for API testing",
-    imageUrl: "uploads/posts/test-image.jpg",
-    status: "published",
-  },
+ {
+  id: "550e8400-e29b-41d4-a716-446655440000",
+  userId: "test-user-id",
+  caption: "Seed post for API testing",
+  imageUrl: "uploads/posts/test-image.jpg",
+  status: "published",
+  createdAt: new Date("2026-07-01T10:00:00.000Z"),
+},
 ];
 
 export default class PostModel {
@@ -17,6 +18,7 @@ export default class PostModel {
     this.caption = caption;
     this.imageUrl = imageUrl;
     this.status = status;
+    this.createdAt = new Date();
   }
 
   static createPost(userId, caption, imageUrl, status = "published") {
@@ -27,7 +29,12 @@ export default class PostModel {
     return post;
   }
 
-  static getAllPosts(caption, page = 1, limit = 10) {
+  static getAllPosts(
+  caption,
+  sort,
+  page = 1,
+  limit = 10,
+) {
   let filteredPosts = posts.filter(
     (post) => post.status === "published",
   );
@@ -38,6 +45,24 @@ export default class PostModel {
     filteredPosts = filteredPosts.filter((post) =>
       post.caption.toLowerCase().includes(normalizedCaption),
     );
+  }
+
+  if (sort === "date") {
+    filteredPosts = [...filteredPosts].sort(
+      (a, b) => b.createdAt - a.createdAt,
+    );
+  }
+
+  if (sort === "engagement") {
+    filteredPosts = [...filteredPosts].sort((a, b) => {
+      const likesOnPostA =
+        LikeModel.getLikesByPostId(a.id).length;
+
+      const likesOnPostB =
+        LikeModel.getLikesByPostId(b.id).length;
+
+      return likesOnPostB - likesOnPostA;
+    });
   }
 
   const totalPosts = filteredPosts.length;
@@ -60,7 +85,6 @@ export default class PostModel {
     },
   };
 }
-
   static getPostsByUserId(userId) {
     return posts.filter((post) => post.userId === userId);
   }

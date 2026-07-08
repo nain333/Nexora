@@ -8,6 +8,7 @@ export default class UserModel {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.createdAt = new Date();
     }
 
     static addUser(name, email, password) {
