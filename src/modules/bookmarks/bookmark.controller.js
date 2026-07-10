@@ -28,17 +28,16 @@ export default class BookmarkController {
       throw new NotFoundError("Post not found");
     }
 
-    const existingBookmark =
-      BookmarkModel.getBookmarkByUserAndPost(userId, postId);
+    const existingBookmark = BookmarkModel.getBookmarkByUserAndPost(
+      userId,
+      postId,
+    );
 
     if (existingBookmark) {
       throw new ConflictError("Post is already bookmarked");
     }
 
-    const bookmark = BookmarkModel.createBookmark(
-      userId,
-      postId,
-    );
+    const bookmark = BookmarkModel.createBookmark(userId, postId);
 
     return res.status(201).json({
       status: "success",
@@ -53,10 +52,7 @@ export default class BookmarkController {
     const { id: postId } = req.params;
     const userId = req.user.userId;
 
-    const bookmark = BookmarkModel.getBookmarkByUserAndPost(
-      userId,
-      postId,
-    );
+    const bookmark = BookmarkModel.getBookmarkByUserAndPost(userId, postId);
 
     if (!bookmark) {
       throw new NotFoundError("Bookmark not found");

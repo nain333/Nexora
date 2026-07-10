@@ -11,10 +11,7 @@ const bookmarkRouter = Router();
 
 bookmarkRouter.use(authMiddleware);
 
-bookmarkRouter.get(
-  "/",
-  BookmarkController.getBookmarks,
-);
+bookmarkRouter.get("/", BookmarkController.getBookmarks);
 
 bookmarkRouter.post(
   "/:id",

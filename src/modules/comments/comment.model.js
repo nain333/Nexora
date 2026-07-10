@@ -3,29 +3,25 @@ import { randomUUID } from "node:crypto";
 const comments = [];
 
 export default class CommentModel {
-    constructor(userId, postId, content) {
-        this.id = randomUUID();
-        this.userId = userId;
-        this.postId = postId;
-        this.content = content;
-        this.createdAt = new Date();
-    }
+  constructor(userId, postId, content) {
+    this.id = randomUUID();
+    this.userId = userId;
+    this.postId = postId;
+    this.content = content;
+    this.createdAt = new Date();
+  }
 
-    static createComment(userId, postId, content) {
-        const comment = new CommentModel(
-            userId,
-            postId,
-            content
-        );
+  static createComment(userId, postId, content) {
+    const comment = new CommentModel(userId, postId, content);
 
-        comments.push(comment);
+    comments.push(comment);
 
-        return comment;
-    }
+    return comment;
+  }
 
-    static getCommentsByPostId(postId, page = 1, limit = 10) {
+  static getCommentsByPostId(postId, page = 1, limit = 10) {
     const postComments = comments.filter(
-        (comment) => comment.postId === postId
+      (comment) => comment.postId === postId,
     );
 
     const totalComments = postComments.length;
@@ -34,50 +30,48 @@ export default class CommentModel {
     const startIndex = (page - 1) * limit;
 
     const paginatedComments = postComments.slice(
-        startIndex,
-        startIndex + limit
+      startIndex,
+      startIndex + limit,
     );
 
     return {
-        comments: paginatedComments,
-        pagination: {
-            currentPage: page,
-            limit,
-            totalComments,
-            totalPages,
-        },
+      comments: paginatedComments,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalComments,
+        totalPages,
+      },
     };
-}
+  }
 
-    static getCommentById(commentId) {
-        return comments.find(
-            (comment) => comment.id === commentId
-        );
+  static getCommentById(commentId) {
+    return comments.find((comment) => comment.id === commentId);
+  }
+
+  static updateComment(commentId, content) {
+    const comment = CommentModel.getCommentById(commentId);
+
+    if (!comment) {
+      return null;
     }
 
-    static updateComment(commentId, content) {
-        const comment = CommentModel.getCommentById(commentId);
+    comment.content = content;
 
-        if (!comment) {
-            return null;
-        }
+    return comment;
+  }
 
-        comment.content = content;
+  static deleteComment(commentId) {
+    const commentIndex = comments.findIndex(
+      (comment) => comment.id === commentId,
+    );
 
-        return comment;
+    if (commentIndex === -1) {
+      return null;
     }
 
-    static deleteComment(commentId) {
-        const commentIndex = comments.findIndex(
-            (comment) => comment.id === commentId
-        );
+    const [deletedComment] = comments.splice(commentIndex, 1);
 
-        if (commentIndex === -1) {
-            return null;
-        }
-
-        const [deletedComment] = comments.splice(commentIndex, 1);
-
-        return deletedComment;
-    }
+    return deletedComment;
+  }
 }

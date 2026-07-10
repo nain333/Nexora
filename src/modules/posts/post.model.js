@@ -41,7 +41,7 @@ export default class PostModel {
       );
     }
 
-    if (!sort||sort === "date") {
+    if (!sort || sort === "date") {
       filteredPosts = [...filteredPosts].sort(
         (a, b) => b.createdAt - a.createdAt,
       );

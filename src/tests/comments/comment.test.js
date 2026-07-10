@@ -13,23 +13,19 @@ describe("Comments API", () => {
   beforeAll(async () => {
     await seedDevelopmentData();
 
-    const primaryLoginResponse = await request(app)
-      .post("/api/signin")
-      .send({
-        email: "primary@test.com",
-        password: "Password123",
-      });
+    const primaryLoginResponse = await request(app).post("/api/signin").send({
+      email: "primary@test.com",
+      password: "Password123",
+    });
 
     expect(primaryLoginResponse.statusCode).toBe(200);
 
     primaryToken = primaryLoginResponse.body.data.accessToken;
 
-    const secondaryLoginResponse = await request(app)
-      .post("/api/signin")
-      .send({
-        email: "secondary@test.com",
-        password: "Password123",
-      });
+    const secondaryLoginResponse = await request(app).post("/api/signin").send({
+      email: "secondary@test.com",
+      password: "Password123",
+    });
 
     expect(secondaryLoginResponse.statusCode).toBe(200);
 
@@ -47,19 +43,15 @@ describe("Comments API", () => {
 
   describe("Authentication", () => {
     it("COMMENT-01 should reject GET comments without authentication", async () => {
-      const response = await request(app).get(
-        `/api/comments/${postId}`,
-      );
+      const response = await request(app).get(`/api/comments/${postId}`);
 
       expect(response.statusCode).toBe(401);
     });
 
     it("COMMENT-02 should reject POST comment without authentication", async () => {
-      const response = await request(app)
-        .post(`/api/comments/${postId}`)
-        .send({
-          content: "Unauthorized comment",
-        });
+      const response = await request(app).post(`/api/comments/${postId}`).send({
+        content: "Unauthorized comment",
+      });
 
       expect(response.statusCode).toBe(401);
     });
@@ -76,9 +68,7 @@ describe("Comments API", () => {
 
       expect(response.statusCode).toBe(201);
       expect(response.body.status).toBe("success");
-      expect(response.body.data.comment.content).toBe(
-        "Automated test comment",
-      );
+      expect(response.body.data.comment.content).toBe("Automated test comment");
 
       primaryCommentId = response.body.data.comment.id;
     });
@@ -150,9 +140,7 @@ describe("Comments API", () => {
 
     it("COMMENT-10 should return 404 for a nonexistent post", async () => {
       const response = await request(app)
-        .post(
-          "/api/comments/00000000-0000-4000-8000-000000000000",
-        )
+        .post("/api/comments/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`)
         .send({
           content: "Valid comment",
@@ -180,16 +168,10 @@ describe("Comments API", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body.data.pagination).toBeDefined();
-      expect(
-        response.body.data.pagination.currentPage,
-      ).toBeDefined();
+      expect(response.body.data.pagination.currentPage).toBeDefined();
       expect(response.body.data.pagination.limit).toBeDefined();
-      expect(
-        response.body.data.pagination.totalComments,
-      ).toBeDefined();
-      expect(
-        response.body.data.pagination.totalPages,
-      ).toBeDefined();
+      expect(response.body.data.pagination.totalComments).toBeDefined();
+      expect(response.body.data.pagination.totalPages).toBeDefined();
     });
 
     it("COMMENT-13 should apply page and limit pagination", async () => {
@@ -253,9 +235,7 @@ describe("Comments API", () => {
 
     it("COMMENT-20 should return 404 for a nonexistent post", async () => {
       const response = await request(app)
-        .get(
-          "/api/comments/00000000-0000-4000-8000-000000000000",
-        )
+        .get("/api/comments/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`);
 
       expect(response.statusCode).toBe(404);
@@ -344,9 +324,7 @@ describe("Comments API", () => {
 
     it("COMMENT-28 should return 404 for a nonexistent comment", async () => {
       const response = await request(app)
-        .put(
-          "/api/comments/00000000-0000-4000-8000-000000000000",
-        )
+        .put("/api/comments/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`)
         .send({
           content: "Valid update",
@@ -383,9 +361,7 @@ describe("Comments API", () => {
 
     it("COMMENT-32 should return 404 for a nonexistent comment", async () => {
       const response = await request(app)
-        .delete(
-          "/api/comments/00000000-0000-4000-8000-000000000000",
-        )
+        .delete("/api/comments/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`);
 
       expect(response.statusCode).toBe(404);
@@ -398,9 +374,7 @@ describe("Comments API", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
-      expect(response.body.message).toBe(
-        "Comment deleted successfully",
-      );
+      expect(response.body.message).toBe("Comment deleted successfully");
     });
 
     it("COMMENT-34 should return 404 when deleting the same comment again", async () => {

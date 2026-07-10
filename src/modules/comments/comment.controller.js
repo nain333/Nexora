@@ -5,7 +5,7 @@ import ForbiddenError from "../../shared/errors/forbidden-error.js";
 import NotFoundError from "../../shared/errors/not-found-error.js";
 
 export default class CommentController {
-    static getComments(req, res) {
+  static getComments(req, res) {
     const { id: postId } = req.params;
 
     const page = Number(req.query.page ?? 1);
@@ -14,97 +14,82 @@ export default class CommentController {
     const post = PostModel.getPostById(postId);
 
     if (!post) {
-        throw new NotFoundError("Post not found");
+      throw new NotFoundError("Post not found");
     }
 
-    const result = CommentModel.getCommentsByPostId(
-        postId,
-        page,
-        limit
-    );
+    const result = CommentModel.getCommentsByPostId(postId, page, limit);
 
     return res.status(200).json({
-        status: "success",
-        data: result,
+      status: "success",
+      data: result,
     });
-}
+  }
 
-    static createComment(req, res) {
-        const { id: postId } = req.params;
-        const { content } = req.body;
-        const userId = req.user.userId;
+  static createComment(req, res) {
+    const { id: postId } = req.params;
+    const { content } = req.body;
+    const userId = req.user.userId;
 
-        const post = PostModel.getPostById(postId);
+    const post = PostModel.getPostById(postId);
 
-        if (!post) {
-            throw new NotFoundError("Post not found");
-        }
-
-        const comment = CommentModel.createComment(
-            userId,
-            postId,
-            content
-        );
-
-        return res.status(201).json({
-            status: "success",
-            message: "Comment created successfully",
-            data: {
-                comment,
-            },
-        });
+    if (!post) {
+      throw new NotFoundError("Post not found");
     }
 
-    static updateComment(req, res) {
-        const { id: commentId } = req.params;
-        const { content } = req.body;
+    const comment = CommentModel.createComment(userId, postId, content);
 
-        const comment = CommentModel.getCommentById(commentId);
+    return res.status(201).json({
+      status: "success",
+      message: "Comment created successfully",
+      data: {
+        comment,
+      },
+    });
+  }
 
-        if (!comment) {
-            throw new NotFoundError("Comment not found");
-        }
+  static updateComment(req, res) {
+    const { id: commentId } = req.params;
+    const { content } = req.body;
 
-        if (comment.userId !== req.user.userId) {
-            throw new ForbiddenError(
-                "You are not authorized to update this comment"
-            );
-        }
+    const comment = CommentModel.getCommentById(commentId);
 
-        const updatedComment = CommentModel.updateComment(
-            commentId,
-            content
-        );
-
-        return res.status(200).json({
-            status: "success",
-            message: "Comment updated successfully",
-            data: {
-                comment: updatedComment,
-            },
-        });
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
     }
 
-    static deleteComment(req, res) {
-        const { id: commentId } = req.params;
-
-        const comment = CommentModel.getCommentById(commentId);
-
-        if (!comment) {
-            throw new NotFoundError("Comment not found");
-        }
-
-        if (comment.userId !== req.user.userId) {
-            throw new ForbiddenError(
-                "You are not authorized to delete this comment"
-            );
-        }
-
-        CommentModel.deleteComment(commentId);
-
-        return res.status(200).json({
-            status: "success",
-            message: "Comment deleted successfully",
-        });
+    if (comment.userId !== req.user.userId) {
+      throw new ForbiddenError("You are not authorized to update this comment");
     }
+
+    const updatedComment = CommentModel.updateComment(commentId, content);
+
+    return res.status(200).json({
+      status: "success",
+      message: "Comment updated successfully",
+      data: {
+        comment: updatedComment,
+      },
+    });
+  }
+
+  static deleteComment(req, res) {
+    const { id: commentId } = req.params;
+
+    const comment = CommentModel.getCommentById(commentId);
+
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
+    }
+
+    if (comment.userId !== req.user.userId) {
+      throw new ForbiddenError("You are not authorized to delete this comment");
+    }
+
+    CommentModel.deleteComment(commentId);
+
+    return res.status(200).json({
+      status: "success",
+      message: "Comment deleted successfully",
+    });
+  }
 }

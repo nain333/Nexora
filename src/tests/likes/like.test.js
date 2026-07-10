@@ -12,12 +12,10 @@ describe("Likes API", () => {
   beforeAll(async () => {
     await seedDevelopmentData();
 
-    const primaryLoginResponse = await request(app)
-      .post("/api/signin")
-      .send({
-        email: "primary@test.com",
-        password: "Password123",
-      });
+    const primaryLoginResponse = await request(app).post("/api/signin").send({
+      email: "primary@test.com",
+      password: "Password123",
+    });
 
     expect(primaryLoginResponse.statusCode).toBe(200);
     expect(primaryLoginResponse.body.status).toBe("success");
@@ -25,12 +23,10 @@ describe("Likes API", () => {
 
     primaryToken = primaryLoginResponse.body.data.accessToken;
 
-    const secondaryLoginResponse = await request(app)
-      .post("/api/signin")
-      .send({
-        email: "secondary@test.com",
-        password: "Password123",
-      });
+    const secondaryLoginResponse = await request(app).post("/api/signin").send({
+      email: "secondary@test.com",
+      password: "Password123",
+    });
 
     expect(secondaryLoginResponse.statusCode).toBe(200);
     expect(secondaryLoginResponse.body.status).toBe("success");
@@ -51,18 +47,14 @@ describe("Likes API", () => {
 
   describe("Authentication", () => {
     it("LIKE-01 should reject retrieving likes without authentication", async () => {
-      const response = await request(app).get(
-        `/api/likes/${postId}`,
-      );
+      const response = await request(app).get(`/api/likes/${postId}`);
 
       expect(response.statusCode).toBe(401);
       expect(response.body.status).toBe("fail");
     });
 
     it("LIKE-02 should reject toggling a like without authentication", async () => {
-      const response = await request(app).get(
-        `/api/likes/toggle/${postId}`,
-      );
+      const response = await request(app).get(`/api/likes/toggle/${postId}`);
 
       expect(response.statusCode).toBe(401);
       expect(response.body.status).toBe("fail");
@@ -113,9 +105,7 @@ describe("Likes API", () => {
 
     it("LIKE-07 should return 404 for a nonexistent post", async () => {
       const response = await request(app)
-        .get(
-          "/api/likes/00000000-0000-4000-8000-000000000000",
-        )
+        .get("/api/likes/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`);
 
       expect(response.statusCode).toBe(404);
@@ -140,18 +130,16 @@ describe("Likes API", () => {
 
       expect(likesResponse.statusCode).toBe(200);
 
-      const primaryUserAlreadyLiked =
-        likesResponse.body.data.likes.some((like) => {
+      const primaryUserAlreadyLiked = likesResponse.body.data.likes.some(
+        (like) => {
           return (
             like.userId ===
             JSON.parse(
-              Buffer.from(
-                primaryToken.split(".")[1],
-                "base64url",
-              ).toString(),
+              Buffer.from(primaryToken.split(".")[1], "base64url").toString(),
             ).userId
           );
-        });
+        },
+      );
 
       if (primaryUserAlreadyLiked) {
         const removeResponse = await request(app)
@@ -167,9 +155,7 @@ describe("Likes API", () => {
 
       expect(response.statusCode).toBe(201);
       expect(response.body.status).toBe("success");
-      expect(response.body.message).toBe(
-        "Post liked successfully",
-      );
+      expect(response.body.message).toBe("Post liked successfully");
       expect(response.body.data.like).toBeDefined();
       expect(response.body.data.like.postId).toBe(postId);
     });
@@ -196,9 +182,7 @@ describe("Likes API", () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe("success");
-      expect(response.body.message).toBe(
-        "Like removed successfully",
-      );
+      expect(response.body.message).toBe("Like removed successfully");
       expect(response.body.data.like).toBeDefined();
       expect(response.body.data.like.postId).toBe(postId);
     });
@@ -212,16 +196,11 @@ describe("Likes API", () => {
       expect(response.body.status).toBe("success");
 
       const primaryUserId = JSON.parse(
-        Buffer.from(
-          primaryToken.split(".")[1],
-          "base64url",
-        ).toString(),
+        Buffer.from(primaryToken.split(".")[1], "base64url").toString(),
       ).userId;
 
       const removedLike = response.body.data.likes.find(
-        (like) =>
-          like.userId === primaryUserId &&
-          like.postId === postId,
+        (like) => like.userId === primaryUserId && like.postId === postId,
       );
 
       expect(removedLike).toBeUndefined();
@@ -239,26 +218,16 @@ describe("Likes API", () => {
       expect(currentLikesResponse.statusCode).toBe(200);
 
       const primaryUserId = JSON.parse(
-        Buffer.from(
-          primaryToken.split(".")[1],
-          "base64url",
-        ).toString(),
+        Buffer.from(primaryToken.split(".")[1], "base64url").toString(),
       ).userId;
 
       const secondaryUserId = JSON.parse(
-        Buffer.from(
-          secondaryToken.split(".")[1],
-          "base64url",
-        ).toString(),
+        Buffer.from(secondaryToken.split(".")[1], "base64url").toString(),
       ).userId;
 
       const currentLikes = currentLikesResponse.body.data.likes;
 
-      if (
-        currentLikes.some(
-          (like) => like.userId === primaryUserId,
-        )
-      ) {
+      if (currentLikes.some((like) => like.userId === primaryUserId)) {
         const response = await request(app)
           .get(`/api/likes/toggle/${postId}`)
           .set("Authorization", `Bearer ${primaryToken}`);
@@ -266,11 +235,7 @@ describe("Likes API", () => {
         expect(response.statusCode).toBe(200);
       }
 
-      if (
-        currentLikes.some(
-          (like) => like.userId === secondaryUserId,
-        )
-      ) {
+      if (currentLikes.some((like) => like.userId === secondaryUserId)) {
         const response = await request(app)
           .get(`/api/likes/toggle/${postId}`)
           .set("Authorization", `Bearer ${secondaryToken}`);
@@ -319,9 +284,7 @@ describe("Likes API", () => {
 
     it("LIKE-14 should return 404 when toggling a nonexistent post", async () => {
       const response = await request(app)
-        .get(
-          "/api/likes/toggle/00000000-0000-4000-8000-000000000000",
-        )
+        .get("/api/likes/toggle/00000000-0000-4000-8000-000000000000")
         .set("Authorization", `Bearer ${primaryToken}`);
 
       expect(response.statusCode).toBe(404);

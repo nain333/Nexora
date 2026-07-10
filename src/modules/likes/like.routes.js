@@ -10,17 +10,17 @@ const likeRouter = Router();
 likeRouter.use(authMiddleware);
 
 likeRouter.get(
-    "/toggle/:postId",
-    postIdValidation,
-    validationMiddleware,
-    LikeController.toggleLike
+  "/toggle/:postId",
+  postIdValidation,
+  validationMiddleware,
+  LikeController.toggleLike,
 );
 
 likeRouter.get(
-    "/:postId",
-    postIdValidation,
-    validationMiddleware,
-    LikeController.getLikes
+  "/:postId",
+  postIdValidation,
+  validationMiddleware,
+  LikeController.getLikes,
 );
 
 export default likeRouter;

@@ -1,4 +1,5 @@
 import express from "express";
+import { setupSwagger } from "./config/swagger.config.js";
 import userRouter from "./modules/users/user.routes.js";
 import postRouter from "./modules/posts/post.routes.js";
 import commentRouter from "./modules/comments/comment.route.js";
@@ -11,6 +12,9 @@ import bookmarkRouter from "./modules/bookmarks/bookmark.route.js";
 const app = express();
 // bootstrap route
 app.use(express.json());
+
+setupSwagger(app);
+
 app.get("/", (req, res) =>
   res.json({
     status: "ok",
@@ -22,10 +26,10 @@ app.use("/api", userRouter);
 // log subsequent logging  routes
 
 app.use(loggerMiddleware);
-app.use("/api/posts",postRouter)
-app.use("/api/comments",commentRouter)
-app.use("/api/likes",likeRouter)
-app.use("/api/bookmarks",bookmarkRouter)
+app.use("/api/posts", postRouter);
+app.use("/api/comments", commentRouter);
+app.use("/api/likes", likeRouter);
+app.use("/api/bookmarks", bookmarkRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 export default app;

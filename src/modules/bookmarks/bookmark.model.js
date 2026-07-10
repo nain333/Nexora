@@ -19,34 +19,25 @@ export default class BookmarkModel {
   }
 
   static getBookmarksByUserId(userId) {
-    return bookmarks.filter(
-      (bookmark) => bookmark.userId === userId,
-    );
+    return bookmarks.filter((bookmark) => bookmark.userId === userId);
   }
 
   static getBookmarkByUserAndPost(userId, postId) {
     return bookmarks.find(
-      (bookmark) =>
-        bookmark.userId === userId &&
-        bookmark.postId === postId,
+      (bookmark) => bookmark.userId === userId && bookmark.postId === postId,
     );
   }
 
   static deleteBookmark(userId, postId) {
     const bookmarkIndex = bookmarks.findIndex(
-      (bookmark) =>
-        bookmark.userId === userId &&
-        bookmark.postId === postId,
+      (bookmark) => bookmark.userId === userId && bookmark.postId === postId,
     );
 
     if (bookmarkIndex === -1) {
       return null;
     }
 
-    const [deletedBookmark] = bookmarks.splice(
-      bookmarkIndex,
-      1,
-    );
+    const [deletedBookmark] = bookmarks.splice(bookmarkIndex, 1);
 
     return deletedBookmark;
   }
