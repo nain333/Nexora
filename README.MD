@@ -2,6 +2,15 @@
 
 Nexora is a RESTful social media backend API built with Node.js and Express.js. It provides user authentication, post management, comments, likes, bookmarks, filtering, pagination, sorting, post status management, media uploads, centralized error handling, request validation, API documentation, and automated integration testing.
 
+## Live Deployment
+
+Nexora is deployed on Render.
+
+- **Live API:** https://nexora-q31k.onrender.com/
+- **Swagger UI:** https://nexora-q31k.onrender.com/api-docs/
+
+The interactive Swagger UI can be used to explore the API documentation and test available endpoints.
+
 ## Features
 
 - User registration and authentication
@@ -369,7 +378,13 @@ Example error response:
 
 Interactive API documentation is available through Swagger UI.
 
-After starting the application, open:
+For the deployed application, open:
+
+```text
+https://nexora-q31k.onrender.com/api-docs/
+```
+
+For local development, open:
 
 ```text
 http://localhost:5000/api-docs/
@@ -464,6 +479,10 @@ Development seed data is initialized automatically when the application runs wit
 ```text
 NODE_ENV=development
 ```
+
+The deployed application runs in the production environment and therefore does not initialize development seed data.
+
+Because the deployed application uses in-memory storage and local filesystem uploads, application data and uploaded files are ephemeral and may be lost when the server restarts or the service is redeployed.
 
 ## Security Considerations
 

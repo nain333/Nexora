@@ -15,12 +15,9 @@ app.use(express.json());
 
 setupSwagger(app);
 
-app.get("/", (req, res) =>
-  res.json({
-    status: "ok",
-    message: "welcome to Nexora",
-  }),
-);
+app.get("/", (req, res) => {
+  res.redirect("/api-docs");
+});
 // User routes are intentionally excluded from request logging
 app.use("/api", userRouter);
 // log subsequent logging  routes
