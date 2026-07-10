@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "test": "vitest run",
+    "dev": "nodemon server.js",
+    "start":"node server.js"
+    
   },
   "keywords": [],
   "author": "",
@@ -20,5 +22,9 @@
     "multer": "^2.2.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.10"
   }
 }

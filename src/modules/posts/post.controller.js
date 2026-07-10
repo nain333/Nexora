@@ -12,11 +12,14 @@ static getAllPosts(req, res) {
         limit = 10,
     } = req.query;
 
+    const parsedPage = Number(page);
+    const parsedLimit = Number(limit);
+
     const result = PostModel.getAllPosts(
         caption,
         sort,
-        page,
-        limit,
+        parsedPage,
+        parsedLimit,
     );
 
     return res.status(200).json({

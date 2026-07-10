@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import BadRequestError from "../errors/bad-request-error.js"
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -23,13 +24,14 @@ const fileFilter = (req, file, cb) => {
 
     if (!allowedMimeTypes.includes(file.mimetype)) {
         return cb(
-            new Error("Only JPEG, PNG, and WebP images are allowed")
+            new BadRequestError(
+                "Only JPEG, PNG, and WebP images are allowed",
+            ),
         );
     }
 
     return cb(null, true);
 };
-
 const uploadMiddleware = multer({
     storage,
     fileFilter,

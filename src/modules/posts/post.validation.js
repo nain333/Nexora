@@ -1,6 +1,6 @@
-import { body, param, query } from "express-validator";
+import { body, param, query, checkExact } from "express-validator";
 
-export const createPostValidation = [
+export const createPostValidation = checkExact([
   body("caption")
     .exists({ values: "falsy" })
     .withMessage("Post caption is required")
@@ -10,24 +10,40 @@ export const createPostValidation = [
     .bail()
     .trim()
     .notEmpty()
-    .withMessage("Post caption cannot be empty"),
-];
+    .withMessage("Post caption cannot be empty")
+    .bail()
+    .isLength({ max: 2200 })
+    .withMessage("Post caption must not exceed 2200 characters"),
+]);
 
 export const updatePostValidation = [
-  body("caption")
-    .optional()
-    .isString()
-    .withMessage("Post caption must be a string")
-    .bail()
-    .trim()
-    .notEmpty()
-    .withMessage("Post caption cannot be empty"),
+  checkExact([
+    body("caption")
+      .optional()
+      .isString()
+      .withMessage("Post caption must be a string")
+      .bail()
+      .trim()
+      .notEmpty()
+      .withMessage("Post caption cannot be empty")
+      .bail()
+      .isLength({ max: 2200 })
+      .withMessage("Post caption must not exceed 2200 characters"),
+  ]),
+
+  body("caption").custom((value, { req }) => {
+    if (value === undefined && !req.file) {
+      throw new Error("At least one of caption or image is required");
+    }
+
+    return true;
+  }),
 ];
 export const postIdValidation = [
   param("id").isUUID().withMessage("Post ID must be a valid UUID"),
 ];
 
-export const getAllPostsValidation = [
+export const getAllPostsValidation = checkExact([
   query("caption")
     .optional()
     .isString()
@@ -36,6 +52,7 @@ export const getAllPostsValidation = [
     .trim()
     .notEmpty()
     .withMessage("Caption filter cannot be empty"),
+
   query("sort")
     .optional()
     .isIn(["date", "engagement"])
@@ -52,7 +69,7 @@ export const getAllPostsValidation = [
     .isInt({ min: 1, max: 100 })
     .withMessage("Limit must be between 1 and 100")
     .toInt(),
-];
+]);
 
 export const postStatusValidation = [
   body("status")
