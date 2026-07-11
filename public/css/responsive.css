@@ -132,11 +132,19 @@ flex-direction: column;
 .file-input {
 width: 100%;
 }
+.post-card__comments {
+  padding: var(--space-4);
+}
 
+.comments__list,
+.comment-form {
+  width: 100%;
+}
 .toast-container {
-right: var(--space-4);
-bottom: var(--space-4);
-width: calc(100% - var(--space-8));
+  top: auto;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  width: calc(100% - var(--space-8));
 }
 }
 

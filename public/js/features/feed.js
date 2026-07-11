@@ -4,6 +4,11 @@ import { API_BASE_URL } from "../config.js";
 import { getCurrentUserId } from "../services/token.service.js";
 import { showConfirmDialog } from "../ui/confirm-dialog.js";
 import { showToast } from "../ui/toast.js";
+import {
+  handleCommentSubmit,
+  loadPostComments,
+  togglePostComments,
+} from "./comments.js";
 
 const postsContainer = document.querySelector("#posts-container");
 const feedStatus = document.querySelector("#feed-status");
@@ -28,18 +33,24 @@ function updateLikeButton(likeButton, likes) {
   const isLiked = likes.some((like) => like.userId === currentUserId);
 
   const likeCount = likeButton.querySelector("[data-like-count]");
-  const likeIconPath = likeButton.querySelector(".post-card__action-icon path");
+  const likeIconPath = likeButton.querySelector(
+    ".post-card__action-icon path",
+  );
 
   likeCount.textContent = likes.length > 0 ? String(likes.length) : "";
 
   likeButton.classList.toggle("post-card__action--liked", isLiked);
   likeButton.setAttribute("aria-pressed", String(isLiked));
 
-  likeIconPath.setAttribute("fill", isLiked ? "currentColor" : "none");
+  likeIconPath.setAttribute(
+    "fill",
+    isLiked ? "currentColor" : "none",
+  );
 }
 
 async function loadPostLikes(postCard) {
   const { postId } = postCard.dataset;
+
   const likeButton = postCard.querySelector('[data-action="like"]');
 
   if (!likeButton) {
@@ -65,6 +76,7 @@ function createPostElement(post) {
   article.dataset.postId = post.id;
 
   const header = document.createElement("header");
+
   header.className = "post-card__header";
 
   const status = document.createElement("span");
@@ -156,6 +168,7 @@ function createPostElement(post) {
   commentButton.type = "button";
   commentButton.dataset.action = "comment";
   commentButton.setAttribute("aria-label", "View comments");
+  commentButton.setAttribute("aria-expanded", "false");
 
   commentButton.innerHTML = `
     <svg
@@ -175,12 +188,16 @@ function createPostElement(post) {
       />
     </svg>
 
-    <span class="post-card__action-label">Comment</span>
+    <span
+      class="post-card__action-count"
+      data-comment-count
+    ></span>
   `;
 
   const deleteButton = document.createElement("button");
 
-  deleteButton.className = "post-card__action post-card__action--danger";
+  deleteButton.className =
+    "post-card__action post-card__action--danger";
   deleteButton.type = "button";
   deleteButton.dataset.action = "delete";
   deleteButton.setAttribute("aria-label", "Delete post");
@@ -209,6 +226,67 @@ function createPostElement(post) {
   actions.append(likeButton, commentButton, deleteButton);
   article.append(actions);
 
+  const commentsSection = document.createElement("section");
+
+  commentsSection.className = "post-card__comments";
+  commentsSection.dataset.commentsSection = "";
+  commentsSection.hidden = true;
+
+  commentsSection.innerHTML = `
+    <div
+      class="comments__list"
+      data-comments-list
+    ></div>
+
+    <form
+      class="comment-form"
+      data-comment-form
+    >
+      <input
+        class="comment-form__input"
+        type="text"
+        name="content"
+        placeholder="Write a comment..."
+        autocomplete="off"
+        aria-label="Write a comment"
+        required
+      />
+
+      <button
+        class="comment-form__submit"
+        type="submit"
+        aria-label="Post comment"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          aria-hidden="true"
+        >
+          <path
+            d="M22 2 11 13"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <path
+            d="m22 2-7 20-4-9-9-4Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </form>
+  `;
+
+  article.append(commentsSection);
+
   return article;
 }
 
@@ -233,6 +311,7 @@ function renderPosts(posts) {
 
   postCards.forEach((postCard) => {
     loadPostLikes(postCard);
+    loadPostComments(postCard);
   });
 }
 
@@ -293,6 +372,21 @@ async function handlePostAction(event) {
     return;
   }
 
+  if (action === "comment") {
+    await togglePostComments(postCard);
+
+    const commentsSection = postCard.querySelector(
+      "[data-comments-section]",
+    );
+
+    actionButton.setAttribute(
+      "aria-expanded",
+      String(!commentsSection.hidden),
+    );
+
+    return;
+  }
+
   if (action !== "delete") {
     return;
   }
@@ -326,9 +420,27 @@ async function handlePostAction(event) {
   }
 }
 
+async function handleFeedSubmit(event) {
+  const form = event.target.closest("[data-comment-form]");
+
+  if (!form) {
+    return;
+  }
+
+  const postCard = form.closest(".post-card");
+
+  if (!postCard) {
+    return;
+  }
+
+  await handleCommentSubmit(event, postCard);
+}
+
 function initializeFeed() {
   refreshFeedButton?.addEventListener("click", loadFeed);
+
   postsContainer?.addEventListener("click", handlePostAction);
+  postsContainer?.addEventListener("submit", handleFeedSubmit);
 
   document.addEventListener("auth:signin", loadFeed);
 
