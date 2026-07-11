@@ -12,12 +12,10 @@ import bookmarkRouter from "./modules/bookmarks/bookmark.route.js";
 const app = express();
 // bootstrap route
 app.use(express.json());
-
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 setupSwagger(app);
 
-app.get("/", (req, res) => {
-  res.redirect("/api-docs");
-});
 // User routes are intentionally excluded from request logging
 app.use("/api", userRouter);
 // log subsequent logging  routes

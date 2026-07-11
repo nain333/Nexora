@@ -1,0 +1,128 @@
+:root,
+[data-theme="aqua"] {
+color-scheme: dark;
+
+--color-bg-primary: #050808;
+--color-bg-secondary: #080d0e;
+--color-bg-elevated: #0c1314;
+--color-bg-surface: #10191a;
+--color-bg-surface-hover: #142021;
+--color-bg-overlay: rgb(0 0 0 / 72%);
+
+--color-accent-primary: #00f5d4;
+--color-accent-primary-hover: #39ffe3;
+--color-accent-primary-muted: rgb(0 245 212 / 12%);
+--color-accent-primary-subtle: rgb(0 245 212 / 6%);
+--color-accent-secondary: #00b8a0;
+
+--color-text-primary: #f4fffd;
+--color-text-secondary: #9eb5b1;
+--color-text-muted: #657a77;
+--color-text-inverse: #03110f;
+--color-text-accent: var(--color-accent-primary);
+
+--color-border: #1b2a2b;
+--color-border-strong: #294041;
+--color-border-accent: rgb(0 245 212 / 48%);
+
+--color-success: #2ee59d;
+--color-warning: #ffca5c;
+--color-danger: #ff5c72;
+--color-info: #58a6ff;
+
+--color-success-muted: rgb(46 229 157 / 12%);
+--color-warning-muted: rgb(255 202 92 / 12%);
+--color-danger-muted: rgb(255 92 114 / 12%);
+--color-info-muted: rgb(88 166 255 / 12%);
+
+--gradient-accent: linear-gradient(
+135deg,
+var(--color-accent-primary),
+var(--color-accent-secondary)
+);
+
+--gradient-page: radial-gradient(
+circle at 15% 0%,
+rgb(0 245 212 / 8%),
+transparent 28rem
+),
+var(--color-bg-primary);
+
+--font-family-base:
+Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+sans-serif;
+
+--font-family-display:
+Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+sans-serif;
+
+--font-size-xs: 0.75rem;
+--font-size-sm: 0.875rem;
+--font-size-md: 1rem;
+--font-size-lg: 1.125rem;
+--font-size-xl: 1.25rem;
+--font-size-2xl: 1.5rem;
+--font-size-3xl: 2rem;
+--font-size-4xl: 2.75rem;
+--font-size-5xl: 4rem;
+
+--font-weight-regular: 400;
+--font-weight-medium: 500;
+--font-weight-semibold: 600;
+--font-weight-bold: 700;
+--font-weight-extrabold: 800;
+
+--line-height-tight: 1.15;
+--line-height-snug: 1.35;
+--line-height-base: 1.6;
+--line-height-relaxed: 1.75;
+
+--letter-spacing-tight: -0.03em;
+--letter-spacing-normal: 0;
+--letter-spacing-wide: 0.08em;
+
+--space-1: 0.25rem;
+--space-2: 0.5rem;
+--space-3: 0.75rem;
+--space-4: 1rem;
+--space-5: 1.25rem;
+--space-6: 1.5rem;
+--space-8: 2rem;
+--space-10: 2.5rem;
+--space-12: 3rem;
+--space-16: 4rem;
+--space-20: 5rem;
+--space-24: 6rem;
+
+--radius-sm: 0.375rem;
+--radius-md: 0.625rem;
+--radius-lg: 0.875rem;
+--radius-xl: 1.25rem;
+--radius-2xl: 1.75rem;
+--radius-full: 9999px;
+
+--border-width: 1px;
+
+--shadow-sm: 0 2px 8px rgb(0 0 0 / 18%);
+--shadow-md: 0 10px 30px rgb(0 0 0 / 28%);
+--shadow-lg: 0 24px 64px rgb(0 0 0 / 38%);
+
+--shadow-accent-sm: 0 0 16px rgb(0 245 212 / 12%);
+--shadow-accent-md: 0 0 32px rgb(0 245 212 / 16%);
+--shadow-accent-lg: 0 0 64px rgb(0 245 212 / 18%);
+
+--transition-fast: 120ms ease;
+--transition-base: 200ms ease;
+--transition-slow: 320ms ease;
+
+--container-width: 90rem;
+--content-width: 44rem;
+--sidebar-width: 16rem;
+--header-height: 4.5rem;
+
+--z-index-base: 1;
+--z-index-sticky: 100;
+--z-index-dropdown: 200;
+--z-index-overlay: 500;
+--z-index-toast: 1000;
+}

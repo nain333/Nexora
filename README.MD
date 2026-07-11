@@ -1,17 +1,21 @@
 # Nexora
 
-Nexora is a RESTful social media backend API built with Node.js and Express.js. It provides user authentication, post management, comments, likes, bookmarks, filtering, pagination, sorting, post status management, media uploads, centralized error handling, request validation, API documentation, and automated integration testing.
+Nexora is a RESTful social media application built with Node.js and Express.js. It provides a comprehensive backend API alongside a responsive JavaScript web client for interacting with the application.
+
+The project includes user authentication, post management, comments, likes, bookmarks, filtering, pagination, sorting, post status management, media uploads, centralized error handling, strict request validation, interactive API documentation, automated integration testing, and a browser-based user interface.
 
 ## Live Deployment
 
 Nexora is deployed on Render.
 
-- **Live API:** https://nexora-q31k.onrender.com/
+- **Live Web Client:** https://nexora-q31k.onrender.com/
 - **Swagger UI:** https://nexora-q31k.onrender.com/api-docs/
 
-The interactive Swagger UI can be used to explore the API documentation and test available endpoints.
+The web client provides a browser-based interface for interacting with the Nexora REST API, while Swagger UI provides interactive API documentation and direct endpoint testing.
 
 ## Features
+
+### REST API
 
 - User registration and authentication
 - JWT-based route protection
@@ -36,7 +40,33 @@ The interactive Swagger UI can be used to explore the API documentation and test
 - OpenAPI documentation with Swagger UI
 - Automated API integration and regression testing
 
+### JavaScript Web Client
+
+Nexora includes a responsive browser-based user interface built with HTML, CSS, and vanilla JavaScript.
+
+The client communicates directly with the existing REST API using the Fetch API.
+
+The web client supports:
+
+- User registration
+- User authentication
+- JWT-based authenticated sessions
+- Browser-side access token storage
+- Published post feed
+- Post creation
+- Image uploads
+- Uploaded image display
+- Post comments
+- Like and unlike interactions
+- Post bookmarks
+- Feed refreshing
+- User logout
+- Direct access to Swagger API documentation
+- Responsive interface for desktop and mobile devices
+
 ## Tech Stack
+
+### Backend
 
 - Node.js
 - Express.js
@@ -49,6 +79,17 @@ The interactive Swagger UI can be used to explore the API documentation and test
 - Pino
 - Swagger UI Express
 - OpenAPI 3.0.3
+
+### Frontend
+
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Fetch API
+- Browser Local Storage
+
+### Testing
+
 - Vitest
 - Supertest
 
@@ -56,6 +97,13 @@ The interactive Swagger UI can be used to explore the API documentation and test
 
 ```text
 nexora/
+├── public/
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   └── app.js
+│   └── index.html
+│
 ├── src/
 │   ├── config/
 │   │   ├── env.config.js
@@ -127,10 +175,12 @@ Example:
 ```env
 PORT=5000
 NODE_ENV=development
+LOG_LEVEL=info
 JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=1h
 ```
 
-Do not commit the `.env` file to version control.
+Do not commit production secrets or sensitive environment configuration to version control.
 
 ## Running the Application
 
@@ -146,11 +196,63 @@ Start the application normally:
 npm start
 ```
 
-The API runs by default at:
+The application runs by default at:
 
 ```text
 http://localhost:5000
 ```
+
+Open the web client at:
+
+```text
+http://localhost:5000/
+```
+
+Open the Swagger API documentation at:
+
+```text
+http://localhost:5000/api-docs/
+```
+
+## Web Client
+
+The Nexora web client is served directly by the Express application as static content.
+
+The client is located in:
+
+```text
+public/
+```
+
+Express serves the client application and uploaded media through static file middleware.
+
+The browser interface communicates with the REST API using asynchronous Fetch API requests.
+
+### Authentication Flow
+
+Users can create an account or sign in through the browser interface.
+
+After successful authentication, the JWT access token returned by the API is stored in browser local storage and included in subsequent protected API requests.
+
+Users can log out through the interface, which removes the stored access token.
+
+### Post Interactions
+
+Authenticated users can:
+
+- Create posts
+- Add captions
+- Upload images
+- View published posts
+- Refresh the post feed
+- Like and unlike posts
+- Create comments
+- View comments
+- Bookmark posts
+
+The web client uses the existing REST API and does not duplicate backend business logic.
+
+This maintains separation of concerns between the presentation layer and the API implementation.
 
 ## Development Seed Data
 
@@ -312,6 +414,8 @@ Maximum file size:
 
 Unsupported file types and oversized files are rejected.
 
+Uploaded media is exposed through the Express static file middleware so that post images can be displayed by the web client.
+
 ## Request Validation
 
 Nexora uses `express-validator` for request validation.
@@ -466,7 +570,11 @@ Shared application concerns are organized separately, including:
 - Token services
 - Custom error classes
 
-This structure improves maintainability, testability, and extensibility.
+The browser-based JavaScript client is isolated in the `public` directory and interacts with the backend exclusively through the REST API.
+
+This separation keeps presentation concerns independent from API routing, controllers, business logic, and data management.
+
+The architecture improves maintainability, testability, and extensibility.
 
 ## Data Storage
 
@@ -497,7 +605,30 @@ The application implements several security-related practices:
 - File MIME type validation
 - File size restrictions
 - Generic authentication failure messages
-- Passwords are excluded from API responses
+- Passwords excluded from API responses
+- Environment-based secret configuration
+
+## Deployment
+
+Nexora is deployed as a Node.js web service on Render.
+
+The deployed application provides:
+
+- The JavaScript web client at `/`
+- The REST API under `/api`
+- Swagger UI at `/api-docs`
+- Static access to uploaded media
+
+### Deployment Limitations
+
+The project intentionally uses in-memory data storage to satisfy the project requirements.
+
+As a result:
+
+- Application data is reset when the server process restarts.
+- Uploaded files use the local filesystem.
+- Uploaded files may be lost when the service restarts or is redeployed.
+- The deployment is intended as a live demonstration of the application and REST API.
 
 ## Future Improvements
 
@@ -513,6 +644,7 @@ Potential future enhancements include:
 - Follow and unfollow functionality
 - Notifications
 - Cloud-based media storage
+- Frontend state management
 - Docker containerization
 - CI/CD integration
 
